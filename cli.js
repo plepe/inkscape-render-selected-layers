@@ -36,7 +36,7 @@ function loadSVG (callback) {
 }
 
 function run () {
-  async.eachOf(
+  async.eachOfSeries(
     data.render,
     (def, id, done) => render(id, def, done),
     (err) => {
