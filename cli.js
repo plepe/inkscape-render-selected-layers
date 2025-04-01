@@ -74,11 +74,26 @@ function render (id, def, callback) {
 
   const tmpFilename = 'tmp/' + id + '.svg'
   const finalFilename = 'data/' + id + '.png'
+  const newBody = svgFile.documentElement.outerHTML
 
   async.waterfall([
-    done => fs.writeFile(tmpFilename, svgFile.documentElement.outerHTML, done),
+    done => fs.readFile(tmpFilename, (err, body) => {
+      if (body == newBody) {
+        console.log(id, 'no change')
+        return done(true)
+      }
+
+      done()
+    }),
+    done => fs.writeFile(tmpFilename, newBody, done),
     done => childProcess.execFile('inkscape', ['--export-area-page', '--export-width=3840', '--export-height=2160', '-o', finalFilename, tmpFilename], done)
-  ], callback)
+  ], (err) => {
+    if (err === true) {
+      return callback()
+    }
+
+    callback(err)
+  })
 }
 
 function convertToSelector (str) {
