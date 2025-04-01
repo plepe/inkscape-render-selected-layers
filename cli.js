@@ -53,7 +53,6 @@ function render (id, def, callback) {
   ;(def.hide || []).forEach(labelId => {
     const items = svgFile.querySelectorAll(convertToSelector(labelId))
     Array.from(items).forEach(item => {
-      console.log('hide', item.getAttribute('inkscape:label'))
       let current = item.getAttribute('style') || ''
       item.setAttribute('style', current + ';display:none')
     })
@@ -62,9 +61,7 @@ function render (id, def, callback) {
   ;(def.show || []).forEach(labelId => {
     const items = svgFile.querySelectorAll(convertToSelector(labelId))
     Array.from(items).forEach(item => {
-      console.log('show', item.getAttribute('inkscape:label'))
       let current = item.getAttribute('style') || ''
-      console.log(current)
       current = current.split(';').filter(v => v !== 'display:none').join(';')
 
       if (current !== '') {
