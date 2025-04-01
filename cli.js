@@ -3,6 +3,7 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 const async = require('async')
 const JSDOM = require("jsdom").JSDOM
+const childProcess = require('child_process')
 
 const data = yaml.load(fs.readFileSync('karte.yaml'))
 let svgFile
@@ -74,7 +75,13 @@ function render (id, def, callback) {
     })
   })
 
-  fs.writeFile('tmp/' + id + '.svg', svgFile.documentElement.outerHTML, (err) => callback(err))
+  const tmpFilename = 'tmp/' + id + '.svg'
+  const finalFilename = 'data/' + id + '.png'
+
+  async.waterfall([
+    done => fs.writeFile(tmpFilename, svgFile.documentElement.outerHTML, done),
+    done => childProcess.execFile('inkscape', ['--export-area-page', '--export-width=3840', '--export-height=2160', '-o', finalFilename, tmpFilename], done)
+  ], callback)
 }
 
 function convertToSelector (str) {
