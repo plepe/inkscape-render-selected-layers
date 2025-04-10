@@ -5,7 +5,9 @@ const async = require('async')
 const JSDOM = require("jsdom").JSDOM
 const childProcess = require('child_process')
 
-const data = yaml.load(fs.readFileSync('karte.yaml'))
+const filename = process.argv[2]
+
+const data = yaml.load(fs.readFileSync(filename + '.yaml'))
 let svgFile
 
 init(err => {
@@ -24,7 +26,7 @@ function init (callback) {
 }
 
 function loadSVG (callback) {
-  fs.readFile('karte.svg', (err, body) => {
+  fs.readFile(filename + '.svg', (err, body) => {
     if (err) { return callback(err) }
 
     const dom = new JSDOM('')
