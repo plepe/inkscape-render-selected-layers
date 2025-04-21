@@ -88,7 +88,7 @@ function render (id, def, callback) {
       done()
     }),
     done => fs.writeFile(tmpFilename, newBody, done),
-    done => childProcess.execFile('inkscape', ['--export-area-page', '--export-width=3840', '--export-height=2160', '-o', finalFilename, tmpFilename], done)
+    done => childProcess.execFile('inkscape', ['--export-area-page', '-o', finalFilename, tmpFilename], done)
   ], (err) => {
     if (err === true) {
       return callback()
