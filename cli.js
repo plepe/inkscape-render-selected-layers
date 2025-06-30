@@ -5,6 +5,10 @@ const async = require('async')
 const JSDOM = require("jsdom").JSDOM
 const childProcess = require('child_process')
 
+const options = {
+  localTmpFileName: '.tmp.svg'
+}
+
 const filename = process.argv[2]
 
 const data = yaml.load(fs.readFileSync(filename + '.yaml'))
@@ -75,6 +79,7 @@ function render (id, def, callback) {
   })
 
   const tmpFilename = 'tmp/' + id + '.svg'
+  const localTmpFilename = options.localTmpFileName
   const finalFilename = 'data/' + id + '.png'
   const newBody = svgFile.documentElement.outerHTML
 
@@ -88,7 +93,8 @@ function render (id, def, callback) {
       done()
     }),
     done => fs.writeFile(tmpFilename, newBody, done),
-    done => childProcess.execFile('inkscape', ['--export-area-page', '-o', finalFilename, tmpFilename], done)
+    done => fs.writeFile(localTmpFilename, newBody, done),
+    done => childProcess.execFile('inkscape', ['--export-area-page', '-o', finalFilename, localTmpFilename], done)
   ], (err) => {
     if (err === true) {
       return callback()
